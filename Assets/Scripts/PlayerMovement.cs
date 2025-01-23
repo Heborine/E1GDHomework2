@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpHeight = 3f;
 
     float direction = 0;
+    bool isGrounded = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,12 +37,43 @@ public class PlayerMovement : MonoBehaviour
 
     void OnJump()
     {
-        Jump();
-        // Debug.Log("boing");
+        if(isGrounded)
+        {
+            Jump();
+            // Debug.Log("boing");
+        }
     }
 
     void Jump()
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision) 
+    {
+        
+    }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+            for(int i = 0; i < collision.contactCount; i++)
+            {
+                if(Vector2.Angle(collision.GetContact(i).normal, Vector2.up) < 45f)
+                {
+                    isGrounded = true;
+                }
+            }
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
     }
 }
