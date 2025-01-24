@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
     Rigidbody2D rb;
     [SerializeField] float speed = 1f;
+    [SerializeField] float sprintMult = 1.5f;
     [SerializeField] float jumpHeight = 3f;
     [SerializeField] float dashSpeed = 3f;
 
@@ -12,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
     bool isGrounded = false;
 
     bool isDashing = false;
+    bool isSprinting = false;
+
+    public float currSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,7 +47,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(float dir)
     {
-        rb.linearVelocity = new Vector2(dir * speed, rb.linearVelocity.y);
+        if(isSprinting)
+        {
+            currSpeed = speed * sprintMult;
+        }
+        else{
+            currSpeed = speed;
+        }
+        rb.linearVelocity = new Vector2(dir * currSpeed, rb.linearVelocity.y);
     }
 
     void OnJump()
@@ -78,6 +89,11 @@ public class PlayerMovement : MonoBehaviour
         // }
         rb.linearVelocity = new Vector2(dashDir * dashSpeed, rb.linearVelocity.y/2);
         isDashing = true;
+    }
+
+    void OnSprint(InputValue value)
+    {
+        isSprinting = value.isPressed;
     }
 
     void OnCollisionEnter2D(Collision2D collision) 
