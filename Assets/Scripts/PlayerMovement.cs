@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float sprintMult = 1.5f;
     [SerializeField] float jumpHeight = 3f;
     [SerializeField] float dashSpeed = 3f;
+    [SerializeField] float doubleJumpCooldownLength = 1f;
 
     float direction = 0;
     bool isGrounded = false;
@@ -17,6 +18,10 @@ public class PlayerMovement : MonoBehaviour
     bool isSprinting = false;
 
     public float currSpeed;
+
+    int jumpCount = 0;
+
+    float doubleJumpCooldownTimer = 0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,6 +40,10 @@ public class PlayerMovement : MonoBehaviour
         if(!isDashing)
         {
             Move(direction);
+        }
+        if (doubleJumpCooldownTimer > 0)
+        {
+            doubleJumpCooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -63,7 +72,16 @@ public class PlayerMovement : MonoBehaviour
         if(isGrounded)
         {
             Jump();
+            jumpCount++;
+            doubleJumpCooldownTimer = doubleJumpCooldownLength;
             // Debug.Log("boing");
+        }
+        else if(jumpCount < 2 && doubleJumpCooldownTimer <= 0)
+        {
+            Jump();
+            jumpCount++;
+            // resetting it does not matter since the timer sets on the first jump anyways
+            // doubleJumpCooldownTimer = 0;
         }
     }
 
@@ -104,7 +122,16 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision) 
     {
-        
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            for(int i = 0; i < collision.contactCount; i++)
+            {
+                if(Vector2.Angle(collision.GetContact(i).normal, Vector2.up) < 45f)
+                {
+                    jumpCount = 0;
+                }
+            }
+        }
     }
 
     void OnCollisionStay2D(Collision2D collision)
