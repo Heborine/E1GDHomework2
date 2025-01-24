@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -94,6 +95,11 @@ public class PlayerMovement : MonoBehaviour
     void OnSprint(InputValue value)
     {
         isSprinting = value.isPressed;
+    }
+
+    void OnRestart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void OnCollisionEnter2D(Collision2D collision) 
