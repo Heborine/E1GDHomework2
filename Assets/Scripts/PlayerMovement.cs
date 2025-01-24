@@ -120,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
-        if(isDashing)
+        if(isDashing && !collision.gameObject.CompareTag("Wall"))
         {
             rb.linearVelocity = new Vector2(0, 0);
             isDashing = false;
