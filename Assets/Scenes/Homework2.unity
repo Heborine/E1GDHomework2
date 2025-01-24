@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 7
   jumpHeight: 8
+  dashSpeed: 14
 --- !u!114 &27755234
 MonoBehaviour:
   m_ObjectHideFlags: 0

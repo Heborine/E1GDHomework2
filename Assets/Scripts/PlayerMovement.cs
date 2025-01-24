@@ -6,9 +6,12 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     [SerializeField] float speed = 1f;
     [SerializeField] float jumpHeight = 3f;
+    [SerializeField] float dashSpeed = 3f;
 
     float direction = 0;
     bool isGrounded = false;
+
+    bool isDashing = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,7 +22,15 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Move(direction);
+        // // only reset dash if you stay still
+        // if(rb.linearVelocity.x == 0 && rb.linearVelocity.y == 0)
+        // {
+        //     isDashing = false;
+        // }
+        if(!isDashing)
+        {
+            Move(direction);
+        }
     }
 
     void OnMove(InputValue value)
@@ -49,6 +60,26 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
     }
 
+    void OnDash(InputValue val)
+    {
+        // prevent hitting dash multiple times in a row and conflicts between left and right
+        if(!isDashing)
+        {
+            Dash(val);
+        }
+    }
+
+    void Dash(InputValue val)
+    {
+        float dashDir = val.Get<float>();
+        // if(Math.Abs(dir) != 1)
+        // {
+        //     dir = 0;
+        // }
+        rb.linearVelocity = new Vector2(dashDir * dashSpeed, rb.linearVelocity.y/2);
+        isDashing = true;
+    }
+
     void OnCollisionEnter2D(Collision2D collision) 
     {
         
@@ -66,6 +97,11 @@ public class PlayerMovement : MonoBehaviour
                     isGrounded = true;
                 }
             }
+        }
+        if(isDashing)
+        {
+            rb.linearVelocity = new Vector2(0, 0);
+            isDashing = false;
         }
     }
 
