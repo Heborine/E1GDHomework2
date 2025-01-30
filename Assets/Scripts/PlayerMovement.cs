@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float dashSpeed = 3f;
     [SerializeField] float doubleJumpCooldownLength = 1f;
 
+    Animator anim;
+
     float direction = 0;
     bool isGrounded = false;
 
@@ -23,20 +25,18 @@ public class PlayerMovement : MonoBehaviour
 
     float doubleJumpCooldownTimer = 0f;
 
+    bool isFacingRight = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // // only reset dash if you stay still
-        // if(rb.linearVelocity.x == 0 && rb.linearVelocity.y == 0)
-        // {
-        //     isDashing = false;
-        // }
         if(!isDashing)
         {
             Move(direction);
@@ -44,6 +44,11 @@ public class PlayerMovement : MonoBehaviour
         if (doubleJumpCooldownTimer > 0)
         {
             doubleJumpCooldownTimer -= Time.deltaTime;
+        }
+
+        if((isFacingRight && direction == -1) || (!isFacingRight && direction == 1))
+        {
+            Flip();
         }
     }
 
@@ -65,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
             currSpeed = speed;
         }
         rb.linearVelocity = new Vector2(dir * currSpeed, rb.linearVelocity.y);
+        anim.SetBool("isRunning", dir != 0);
     }
 
     void OnJump()
@@ -118,6 +124,14 @@ public class PlayerMovement : MonoBehaviour
     void OnRestart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 newLocalScale = transform.localScale;
+        newLocalScale.x *= -1f;
+        transform.localScale = newLocalScale;
     }
 
     void OnCollisionEnter2D(Collision2D collision) 
