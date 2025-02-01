@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    [SerializeField] float x = 6.6f;
-    [SerializeField] float topY = 13f;
-    [SerializeField] float botY = -9f;
+    float x;
+    float topY;
+    float botY;
 
     Rigidbody2D rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        topY = transform.position.y;
+        botY = transform.position.y - 22f;
+        x = transform.position.x;
     }
 
     // Update is called once per frame
