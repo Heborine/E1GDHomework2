@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Ground
   - Wall
+  - Ladder
+  - Platform
+  - Collectible
+  - Flag
   layers:
   - Default
   - TransparentFX

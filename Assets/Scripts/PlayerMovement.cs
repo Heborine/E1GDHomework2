@@ -175,4 +175,19 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = false;
         }
     }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Collectible"))
+        {
+            Debug.Log("Collectible Collected!");
+            Destroy(collision.gameObject);
+        }
+        else if(collision.gameObject.CompareTag("Flag"))
+        {
+            Debug.Log("End Reached!");
+            Destroy(collision.gameObject);
+            OnRestart();
+        }
+    }
 }
