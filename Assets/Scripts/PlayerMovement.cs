@@ -21,9 +21,9 @@ public class PlayerMovement : MonoBehaviour
 
     public float currSpeed;
 
-    int jumpCount = 0;
+    public int jumpCount = 0;
 
-    float doubleJumpCooldownTimer = 0f;
+    public float doubleJumpCooldownTimer = 0f;
 
     bool isFacingRight = true;
 
@@ -158,6 +158,10 @@ public class PlayerMovement : MonoBehaviour
                 if(Vector2.Angle(collision.GetContact(i).normal, Vector2.up) < 45f)
                 {
                     isGrounded = true;
+                    if(rb.linearVelocity.y <= 0)
+                    {
+                        jumpCount = 0;
+                    }
                 }
             }
         }
@@ -166,6 +170,11 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(0, 0);
             isDashing = false;
         }
+        // if the player is on the ground and is downward, set the jump count to 0 to prevent on enter having an issue if you hit the side of something instead
+        // if (isGrounded && rb.linearVelocity.y <= 0)
+        // {
+        //     jumpCount = 0;
+        // }
     }
 
     void OnCollisionExit2D(Collision2D collision)
